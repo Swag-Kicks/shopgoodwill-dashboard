@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import {
   TrendingUp,
   AlertTriangle,
@@ -7,7 +7,6 @@ import {
   ArrowUpRight,
   ChevronRight,
   BarChart3,
-  Users,
 } from "lucide-react";
 import {
   ScatterChart,
