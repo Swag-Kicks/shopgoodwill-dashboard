@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auction Analytics Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-slate-900">
+    <div class="flex min-h-screen">
+      <!-- Sidebar -->
+      <aside
+        class="w-64 bg-white border-r border-slate-200 p-6 flex flex-col gap-8 hidden lg:flex"
+      >
+        <div class="flex items-center gap-2 text-indigo-600 font-bold text-xl">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Auctionly</span>
+        </div>
+
+        <div class="space-y-6">
+          <h2
+            class="text-xs font-semibold text-slate-400 uppercase tracking-wider"
+          >
+            Filters
+          </h2>
+
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-slate-700">Search</label>
+            <div class="relative">
+              <i
+                data-lucide="search"
+                class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4"
+              ></i>
+              <input
+                type="text"
+                placeholder="Item title..."
+                class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none"
+              />
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-slate-700">Category</label>
+            <select
+              class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm outline-none"
+            >
+              <option>All Categories</option>
+              <option>Electronics</option>
+              <option>Jewelry</option>
+              <option>Collectibles</option>
+            </select>
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-slate-700"
+              >Price Range</label
+            >
+            <input type="range" class="w-full accent-indigo-600" />
+            <div class="flex justify-between text-xs text-slate-500">
+              <span>$0</span>
+              <span>$1000+</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1 p-8 overflow-y-auto">
+        <div class="max-w-7xl mx-auto space-y-8">
+          <!-- Header -->
+          <div class="flex items-center justify-between">
+            <div>
+              <h1 class="text-2xl font-bold text-slate-900">
+                Dashboard Overview
+              </h1>
+              <p class="text-slate-500 text-sm">
+                Real-time auction performance metrics
+              </p>
+            </div>
+            <button
+              class="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 font-medium text-sm"
+            >
+              <i data-lucide="download" class="w-4 h-4"></i>
+              Export CSV
+            </button>
+          </div>
+
+          <!-- KPI Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div
+              class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"
+            >
+              <div class="flex items-center justify-between mb-4">
+                <div class="p-2 bg-blue-50 rounded-xl text-blue-600">
+                  <i data-lucide="gavel"></i>
+                </div>
+                <span
+                  class="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full"
+                  >+12%</span
+                >
+              </div>
+              <p class="text-sm font-medium text-slate-500">Total Auctions</p>
+              <h3 class="text-2xl font-bold text-slate-900 mt-1">1,284</h3>
+            </div>
+            <div
+              class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"
+            >
+              <div class="flex items-center justify-between mb-4">
+                <div class="p-2 bg-emerald-50 rounded-xl text-emerald-600">
+                  <i data-lucide="dollar-sign"></i>
+                </div>
+              </div>
+              <p class="text-sm font-medium text-slate-500">Avg. Price</p>
+              <h3 class="text-2xl font-bold text-slate-900 mt-1">$142.50</h3>
+            </div>
+            <div
+              class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"
+            >
+              <div class="flex items-center justify-between mb-4">
+                <div class="p-2 bg-amber-50 rounded-xl text-amber-600">
+                  <i data-lucide="trending-up"></i>
+                </div>
+              </div>
+              <p class="text-sm font-medium text-slate-500">Total Bids</p>
+              <h3 class="text-2xl font-bold text-slate-900 mt-1">8,432</h3>
+            </div>
+            <div
+              class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"
+            >
+              <div class="flex items-center justify-between mb-4">
+                <div class="p-2 bg-rose-50 rounded-xl text-rose-600">
+                  <i data-lucide="bar-chart-3"></i>
+                </div>
+              </div>
+              <p class="text-sm font-medium text-slate-500">Avg. Bids</p>
+              <h3 class="text-2xl font-bold text-slate-900 mt-1 6.5">6.5</h3>
+            </div>
+          </div>
+
+          <!-- Charts Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div
+              class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"
+            >
+              <h3 class="text-lg font-semibold mb-6">Price Distribution</h3>
+              <div class="chart-container">
+                <canvas id="priceChart"></canvas>
+              </div>
+            </div>
+            <div
+              class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm"
+            >
+              <h3 class="text-lg font-semibold mb-6">Category Volume</h3>
+              <div class="chart-container">
+                <canvas id="categoryChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div
+            class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
+          >
+            <div
+              class="px-6 py-4 border-b border-slate-100 flex items-center justify-between"
+            >
+              <h3 class="font-semibold">Recent Auctions</h3>
+              <button class="text-sm text-indigo-600 font-medium">
+                View All
+              </button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr
+                    class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider"
+                  >
+                    <th class="px-6 py-4 font-semibold">Item Title</th>
+                    <th class="px-6 py-4 font-semibold">Category</th>
+                    <th class="px-6 py-4 font-semibold">Price</th>
+                    <th class="px-6 py-4 font-semibold">Bids</th>
+                    <th class="px-6 py-4 font-semibold">Status</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 text-sm">
+                  <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-6 py-4 font-medium">
+                      Vintage Nikon F3 Camera
+                    </td>
+                    <td class="px-6 py-4 text-slate-500">Electronics</td>
+                    <td class="px-6 py-4 text-emerald-600 font-semibold">
+                      $450.00
+                    </td>
+                    <td class="px-6 py-4">24</td>
+                    <td class="px-6 py-4">
+                      <span
+                        class="px-2 py-1 bg-emerald-50 text-emerald-600 rounded-full text-xs font-medium"
+                        >Active</span
+                      >
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-6 py-4 font-medium">14K Gold Diamond Ring</td>
+                    <td class="px-6 py-4 text-slate-500">Jewelry</td>
+                    <td class="px-6 py-4 text-emerald-600 font-semibold">
+                      $1,200.00
+                    </td>
+                    <td class="px-6 py-4">42</td>
+                    <td class="px-6 py-4">
+                      <span
+                        class="px-2 py-1 bg-amber-50 text-amber-600 rounded-full text-xs font-medium"
+                        >Ending Soon</span
+                      >
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-6 py-4 font-medium">Rare Comic Book #1</td>
+                    <td class="px-6 py-4 text-slate-500">Collectibles</td>
+                    <td class="px-6 py-4 text-emerald-600 font-semibold">
+                      $85.00
+                    </td>
+                    <td class="px-6 py-4">15</td>
+                    <td class="px-6 py-4">
+                      <span
+                        class="px-2 py-1 bg-slate-100 text-slate-500 rounded-full text-xs font-medium"
+                        >Closed</span
+                      >
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // Initialize Lucide Icons
+      lucide.createIcons();
+
+      // Price Distribution Chart
+      const priceCtx = document.getElementById("priceChart").getContext("2d");
+      new Chart(priceCtx, {
+        type: "bar",
+        data: {
+          labels: [
+            "$0-100",
+            "$100-200",
+            "$200-300",
+            "$300-400",
+            "$400-500",
+            "$500+",
+          ],
+          datasets: [
+            {
+              label: "Auctions",
+              data: [450, 320, 210, 150, 80, 45],
+              backgroundColor: "#6366f1",
+              borderRadius: 8,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { grid: { display: false }, border: { display: false } },
+            x: { grid: { display: false }, border: { display: false } },
+          },
+        },
+      });
+
+      // Category Volume Chart
+      const catCtx = document.getElementById("categoryChart").getContext("2d");
+      new Chart(catCtx, {
+        type: "doughnut",
+        data: {
+          labels: [
+            "Electronics",
+            "Jewelry",
+            "Collectibles",
+            "Clothing",
+            "Other",
+          ],
+          datasets: [
+            {
+              data: [35, 25, 20, 15, 5],
+              backgroundColor: [
+                "#6366f1",
+                "#10b981",
+                "#f59e0b",
+                "#ef4444",
+                "#94a3b8",
+              ],
+              borderWidth: 0,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: "70%",
+          plugins: {
+            legend: {
+              position: "bottom",
+              labels: { usePointStyle: true, padding: 20 },
+            },
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
