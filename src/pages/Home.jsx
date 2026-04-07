@@ -70,10 +70,10 @@ const Home = () => {
     setFiltered(data);
   }, [auctions, listingTypeFilter, minBidsFilter]);
 
-  const categories = [
-    "all",
-    ...new Set((auctions || []).map((a) => a.full_category_path)),
-  ];
+  // const categories = [
+  //   "all",
+  //   ...new Set((auctions || []).map((a) => a.full_category_path)),
+  // ];
   const listingTypes = [
     ...new Set((auctions || []).map((a) => a.listing_type)),
   ];
@@ -128,7 +128,8 @@ const Home = () => {
             <Filters
               categories={availableCategories}
               listingTypes={listingTypes}
-              selectedCategory={selectedCategory}
+              selectedCategory={category} // <-- use it
+              // selectedCategory={selectedCategory}
               selectedListingType={listingTypeFilter}
               selectedMinBids={minBidsFilter}
               onFilterChange={handleFilterChange}
