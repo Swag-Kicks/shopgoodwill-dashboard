@@ -99,11 +99,6 @@ const Home = () => {
           onClick={() => setSidebarOpen(false)}
         />
       )}
-      {loading.auctions || loading.search ? (
-        <div className="flex items-center justify-center h-40">
-          <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-        </div>
-      ) : null}
 
       {/* Sidebar */}
       <aside
@@ -166,6 +161,12 @@ const Home = () => {
           © 2026 Auctionaly
         </div>
       </aside>
+
+      {loading.auctions || loading.search ? (
+        <div className="flex items-center justify-center h-40">
+          <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      ) : null}
 
       {/* Mobile Toggle Button */}
       <button
