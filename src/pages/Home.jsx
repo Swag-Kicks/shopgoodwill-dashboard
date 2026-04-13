@@ -90,13 +90,11 @@ const Home = () => {
     ...new Set((auctions || []).map((a) => a.listing_type)),
   ];
 
-  {
-    (loading.auctions || loading.search) && (
+  {(loading.auctions || loading.search) && (
       <div className="flex items-center justify-center h-40">
         <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
-    );
-  }
+    );}
 
   return (
     <div className="flex min-h-screen bg-slate-50 relative">
