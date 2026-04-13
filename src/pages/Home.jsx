@@ -126,7 +126,7 @@ const Home = () => {
 
           {/* Text */}
           <span className="font-semibold text-slate-900 text-base tracking-wide">
-            THRIFTOPS DATA
+            Thriftops Data
           </span>
         </div>
 
