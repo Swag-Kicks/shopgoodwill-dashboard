@@ -162,12 +162,6 @@ const Home = () => {
         </div>
       </aside>
 
-      {loading.auctions || loading.search ? (
-        <div className="flex items-center justify-center h-40">
-          <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-        </div>
-      ) : null}
-
       {/* Mobile Toggle Button */}
       <button
         className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-indigo-600 text-white rounded shadow-lg"
@@ -178,16 +172,25 @@ const Home = () => {
 
       {/* Main Content */}
       <main className="flex-1 p-8 overflow-y-auto">
-        {pageView === "dashboard" && (
-          <DashboardHome
-            filtered={filtered || []}
-            apiStats={apiStats}
-            page={page}
-            setPage={setPage}
-            loading={loading}
-          />
+        {loading.auctions || loading.search ? (
+          <div className="flex items-center justify-center h-40">
+            <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        ) : (
+          <>
+            {pageView === "dashboard" && (
+              <DashboardHome
+                filtered={filtered || []}
+                apiStats={apiStats}
+                page={page}
+                setPage={setPage}
+                loading={loading}
+              />
+            )}
+
+            {pageView === "reports" && <Reports />}
+          </>
         )}
-        {pageView === "reports" && <Reports />}
       </main>
     </div>
   );
