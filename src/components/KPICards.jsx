@@ -7,41 +7,61 @@ const KPICards = ({ stats, data }) => {
   // stats comes from API:
   // stats = { total_count, avg_price, total_bid_count, avg_bid_number }
 
-  const totalAuctions = (stats.total_count || 0).toLocaleString(); // 1,234
-  const totalBids = (stats.total_bid_count || 0).toLocaleString(); // 5,678
-  const avgPrice = (stats.avg_price ? stats.avg_price : 0).toLocaleString(
-    undefined,
-    { minimumFractionDigits: 1, maximumFractionDigits: 1 },
-  ); // 123.4
-  const avgBids = (
-    stats.avg_bid_number ? stats.avg_bid_number : 0
-  ).toLocaleString(undefined, {
+  // const totalAuctions = (stats.total_count || 0).toLocaleString(); // 1,234
+  // const totalBids = (stats.total_bid_count || 0).toLocaleString(); // 5,678
+  // const avgPrice = (stats.avg_price ? stats.avg_price : 0).toLocaleString(
+  //   undefined,
+  //   { minimumFractionDigits: 1, maximumFractionDigits: 1 },
+  // ); // 123.4
+  // const avgBids = (
+  //   stats.avg_bid_number ? stats.avg_bid_number : 0
+  // ).toLocaleString(undefined, {
+  //   minimumFractionDigits: 1,
+  //   maximumFractionDigits: 1,
+  // }); // 5.6
+
+  const totalAuctions = Number(stats.total_count || 0);
+  const totalBids = Number(stats.total_bid_count || 0);
+  const avgPrice = Number(stats.avg_price || 0);
+  const avgBids = Number(stats.avg_bid_number || 0);
+
+  const formattedTotalAuctions = totalAuctions.toLocaleString();
+  const formattedTotalBids = totalBids.toLocaleString();
+  const formattedAvgPrice = avgPrice.toLocaleString(undefined, {
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,
-  }); // 5.6
+  });
+  const formattedAvgBids = avgBids.toLocaleString(undefined, {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  });
 
+  console.log("Total Auctions:", formattedTotalAuctions);
+  console.log("Total Bids:", formattedTotalBids);
+  console.log("Average Price:", formattedAvgPrice);
+  console.log("Average Bids:", formattedAvgBids);
   const statsArray = [
     {
-      label: "Total Auctions",
-      value: totalAuctions,
+      label: "Total Products",
+      value: formattedTotalAuctions,
       icon: <FaGavel />,
       color: "blue",
     },
     {
       label: "Avg. Price",
-      value: `$${avgPrice}`,
+      value: `$${formattedAvgPrice}`,
       icon: <FaDollarSign />,
       color: "emerald",
     },
     {
-      label: "Total Bids",
-      value: totalBids,
+      label: "Total Products with Bids",
+      value: formattedTotalBids,
       icon: <FaChartLine />,
       color: "amber",
     },
     {
       label: "Avg. Bids",
-      value: avgBids,
+      value: formattedAvgBids,
       icon: <FaChartBar />,
       color: "rose",
     },

@@ -11,7 +11,10 @@ import { fetchAuctions, fetchCategories } from "../services/api";
 const Home = () => {
   const [auctions, setAuctions] = useState([]);
   const [filtered, setFiltered] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState({
+    auctions: false,
+    search: false,
+  });
   const [category, setCategory] = useState("all");
   const [page, setPage] = useState(1);
   const [apiStats, setApiStats] = useState(null);
@@ -21,25 +24,39 @@ const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [pageView, setPageView] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [searchFilter, setSearchFilter] = useState("");
 
-  // Fetch auctions
   useEffect(() => {
-    setLoading(true);
-    fetchAuctions(selectedCategory, page)
-      .then((data) => {
-        if (!data) return;
-
-        setAuctions(data.listings || []);
-        setFiltered(data.listings || []);
-        setApiStats({
-          total_count: data.total_count || 0,
-          avg_price: data.avg_price || 0,
-          total_bid_count: data.total_bid_count || 0,
-          avg_bid_number: data.avg_bid_number || 0,
-        });
+    const delay = setTimeout(() => {
+      setLoading((prev) => ({ ...prev, auctions: true }));
+      fetchAuctions({
+        category: selectedCategory,
+        search: searchFilter,
+        minBids: minBidsFilter,
+        listingType: listingTypeFilter,
+        page,
       })
-      .finally(() => setLoading(false));
-  }, [selectedCategory, page]);
+        .then((data) => {
+          if (!data) return;
+
+          setAuctions(data.listings || []);
+          setFiltered(data.listings || []);
+
+          setApiStats({
+            total_count: data.total_count || 0,
+            avg_price: data.avg_price || 0,
+            total_bid_count: data.total_bid_count || 0,
+            avg_bid_number: data.avg_bid_number || 0,
+          });
+        })
+        .finally(() => {
+          setLoading((prev) => ({ ...prev, auctions: false }));
+        });
+    });
+
+    return () => clearTimeout(delay);
+  }, [selectedCategory, page, searchFilter, minBidsFilter, listingTypeFilter]);
+
   useEffect(() => {
     fetchCategories().then((data) => {
       if (!data) return;
@@ -56,19 +73,14 @@ const Home = () => {
       setCategory(filter.category);
       setPage(1);
     }
+
     if (filter.listingType !== undefined)
       setListingTypeFilter(filter.listingType);
-    if (filter.minBids !== undefined) setMinBidsFilter(filter.minBids);
-  };
 
-  // Apply non-category filters
-  useEffect(() => {
-    let data = [...(auctions || [])];
-    if (listingTypeFilter)
-      data = data.filter((d) => d.listing_type === listingTypeFilter);
-    if (minBidsFilter) data = data.filter((d) => d.num_bids >= minBidsFilter);
-    setFiltered(data);
-  }, [auctions, listingTypeFilter, minBidsFilter]);
+    if (filter.minBids !== undefined) setMinBidsFilter(filter.minBids);
+
+    if (filter.search !== undefined) setSearchFilter(filter.search);
+  };
 
   // const categories = [
   //   "all",
@@ -78,7 +90,13 @@ const Home = () => {
     ...new Set((auctions || []).map((a) => a.listing_type)),
   ];
 
-  if (loading) return <div className="p-4 text-xl font-bold">Loading...</div>;
+  {
+    (loading.auctions || loading.search) && (
+      <div className="flex items-center justify-center h-40">
+        <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-slate-50 relative">
@@ -97,10 +115,19 @@ const Home = () => {
                     ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
       >
         <div className="flex items-center gap-3 px-6 py-5 border-b border-gray-200 cursor-pointer hover:bg-gray-50">
-          <div className="w-10 h-10 bg-indigo-600 rounded-md flex items-center justify-center text-white font-bold text-lg">
-            A
+          {/* Logo */}
+          <div className="w-12 h-12 flex items-center justify-center">
+            <img
+              src="https://www.thriftops.com/assets/e474a0171b0e6a9a49ee107efb844fb3.svg"
+              alt="Thriftops"
+              className="w-10 h-10 object-contain"
+            />
           </div>
-          <span className="font-bold text-slate-900 text-lg">AUCTIONLY</span>
+
+          {/* Text */}
+          <span className="font-semibold text-slate-900 text-base tracking-wide">
+            THRIFTOPS DATA
+          </span>
         </div>
 
         {/* Sidebar Links */}
@@ -128,10 +155,10 @@ const Home = () => {
             <Filters
               categories={availableCategories}
               listingTypes={listingTypes}
-              selectedCategory={category} // <-- use it
-              // selectedCategory={selectedCategory}
+              selectedCategory={category}
               selectedListingType={listingTypeFilter}
               selectedMinBids={minBidsFilter}
+              selectedSearch={searchFilter} // ✅ ADD THIS
               onFilterChange={handleFilterChange}
               sidebar
             />
@@ -159,6 +186,7 @@ const Home = () => {
             apiStats={apiStats}
             page={page}
             setPage={setPage}
+            loading={loading}
           />
         )}
         {pageView === "reports" && <Reports />}

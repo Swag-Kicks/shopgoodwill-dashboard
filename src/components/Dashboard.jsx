@@ -4,7 +4,7 @@ import Charts from "../components/Charts";
 import AuctionTable from "../components/AuctionTable";
 import ExportCSV from "../components/ExportCSV";
 
-const Dashboard = ({ filtered, apiStats, page, setPage }) => {
+const Dashboard = ({ filtered, apiStats, page, setPage, loading }) => {
   return (
     <main className="flex-1 p-8 overflow-y-auto">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -34,7 +34,15 @@ const Dashboard = ({ filtered, apiStats, page, setPage }) => {
         </div>
 
         {/* Table */}
-        <AuctionTable data={filtered || []} layout="new" />
+        {loading.auctions || loading.search ? (
+          <div className="animate-pulse space-y-3 p-4">
+            <div className="h-4 bg-slate-200 rounded"></div>
+            <div className="h-4 bg-slate-200 rounded w-5/6"></div>
+            <div className="h-4 bg-slate-200 rounded w-4/6"></div>
+          </div>
+        ) : (
+          <AuctionTable data={filtered || []} />
+        )}
       </div>
 
       {/* Pagination */}

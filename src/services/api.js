@@ -1,29 +1,14 @@
-// import axios from "axios";
-
-// const API = axios.create({
-//   baseURL: "https://erp.thriftops.com/techWork/api",
-// });
-
-// export const fetchAuctions = async () => {
-//   try {
-//     const response = await API.get("/get_shopgoodwill_closed_auction.php");
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error fetching auctions:", error);
-//     return []; // fallback to empty
-//   }
-// };
 import axios from "axios";
 
 const API = axios.create({
   baseURL: "https://erp.thriftops.com/techWork/api",
 });
 
-export const fetchAuctions = async (category = "all", page = 1) => {
+export const fetchAuctions = async (params) => {
   try {
-    const response = await API.get(
-      `/get_shopgoodwill_data_details.php?category=${category}&page=${page}`,
-    );
+    const response = await API.get(`/get_shopgoodwill_data_details.php`, {
+      params,
+    });
     return response.data;
   } catch (error) {
     console.error("Error fetching auctions:", error);
@@ -38,5 +23,16 @@ export const fetchCategories = async () => {
   } catch (error) {
     console.error("Error fetching categories:", error);
     return [];
+  }
+};
+export const searchAuctions = async (params) => {
+  try {
+    const response = await API.get(`/get_shopgoodwill_closed_auction.php`, {
+      params,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error searching auctions:", error);
+    return null;
   }
 };
