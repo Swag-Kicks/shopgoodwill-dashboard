@@ -47,6 +47,7 @@ const Home = () => {
             avg_price: data.avg_price || 0,
             total_bid_count: data.total_bid_count || 0,
             avg_bid_number: data.avg_bid_number || 0,
+            total_pages: data.total_pages || 0,
           });
         })
         .finally(() => {

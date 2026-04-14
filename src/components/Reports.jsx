@@ -57,6 +57,8 @@ const Reports = () => {
     id: s.id,
     q: s.q,
   }));
+  const formatNumber = (num, options = {}) =>
+    num?.toLocaleString(undefined, options);
 
   const getBadgeColor = (q) => {
     if (q === "Star")
@@ -100,26 +102,32 @@ const Reports = () => {
       </div>
 
       {/* KPI CARDS */}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {[
           {
             label: "Total GMV",
-            value: `$${(data.kpis.total_gmv / 1000).toFixed(1)}K`,
+            value: `$${formatNumber((data?.kpis?.total_gmv || 0) / 1000, {
+              maximumFractionDigits: 1,
+            })}K`,
             icon: <BarChart3 className="text-indigo-600" />,
           },
           {
             label: "Total Volume",
-            value: data.kpis.total_volume,
+            value: formatNumber(data?.kpis?.total_volume || 0),
             icon: <Zap className="text-amber-500" />,
           },
           {
             label: "Avg Price",
-            value: `$${data.kpis.avg_price?.toFixed(2)}`,
+            value: `$${formatNumber(data?.kpis?.avg_price || 0, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}`,
             icon: <TrendingUp className="text-emerald-500" />,
           },
           {
             label: "Total Bids",
-            value: data.kpis.total_bids,
+            value: formatNumber(data?.kpis?.total_bids || 0),
             icon: <AlertTriangle className="text-rose-500" />,
           },
         ].map((kpi, i) => (
@@ -194,7 +202,10 @@ const Reports = () => {
       </div>
 
       {/* TABLE */}
-      <div className="bg-white rounded-3xl border shadow-sm overflow-x-auto">
+      <div
+        className="bg-white rounded-3xl border shadow-sm overflow-x-auto"
+        style={{ display: "none" }}
+      >
         <table className="w-full min-w-[600px]">
           <thead>
             <tr className="text-xs text-slate-400 border-b">

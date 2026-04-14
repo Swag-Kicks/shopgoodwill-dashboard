@@ -124,7 +124,7 @@ const AuctionTable = ({ data = [] }) => {
 
                 {/* PRICE */}
                 <td className="px-6 py-4 text-emerald-600 font-semibold">
-                  ${Number(item.current_price).toFixed(2)}
+                  ${Number(item.current_price).toLocaleString()}
                 </td>
 
                 {/* BIDS */}

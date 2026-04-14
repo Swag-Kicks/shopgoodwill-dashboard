@@ -5,6 +5,28 @@ import AuctionTable from "../components/AuctionTable";
 import ExportCSV from "../components/ExportCSV";
 
 const Dashboard = ({ filtered, apiStats, page, setPage, loading }) => {
+  const totalPages = apiStats?.total_pages || 1;
+  console.log("totalPages", totalPages);
+  const getPagination = (current, total) => {
+    const delta = 1;
+    const range = [];
+
+    for (
+      let i = Math.max(2, current - delta);
+      i <= Math.min(total - 1, current + delta);
+      i++
+    ) {
+      range.push(i);
+    }
+
+    if (current - delta > 2) range.unshift("...");
+    if (current + delta < total - 1) range.push("...");
+
+    range.unshift(1);
+    if (total !== 1) range.push(total);
+
+    return range;
+  };
   return (
     <main className="flex-1 p-8 overflow-y-auto">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -45,22 +67,43 @@ const Dashboard = ({ filtered, apiStats, page, setPage, loading }) => {
         )}
       </div>
 
-      {/* Pagination */}
-      <div className="flex justify-center gap-4 mt-6">
+      <div className="flex justify-center items-center gap-2 mt-6">
+        {/* Prev */}
         <button
           onClick={() => setPage((p) => Math.max(p - 1, 1))}
-          className="px-4 py-2 bg-gray-200 rounded"
+          disabled={page === 1}
+          className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50"
         >
-          Prev
+          ‹
         </button>
 
-        <span className="px-4 py-2 font-semibold">Page {page}</span>
+        {/* Pages */}
+        <div className="flex items-center gap-2">
+          {getPagination(page, totalPages).map((p, i) => (
+            <button
+              key={i}
+              disabled={p === "..."}
+              onClick={() => typeof p === "number" && setPage(p)}
+              className={`px-3 py-1 rounded min-w-[36px] ${
+                p === page
+                  ? "bg-indigo-600 text-white"
+                  : p === "..."
+                    ? "bg-transparent cursor-default"
+                    : "bg-gray-200"
+              }`}
+            >
+              {p}
+            </button>
+          ))}
+        </div>
 
+        {/* Next */}
         <button
-          onClick={() => setPage((p) => p + 1)}
-          className="px-4 py-2 bg-gray-200 rounded"
+          onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+          disabled={page === totalPages}
+          className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50"
         >
-          Next
+          ›
         </button>
       </div>
     </main>
