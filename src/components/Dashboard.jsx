@@ -6,11 +6,10 @@ import ExportCSV from "../components/ExportCSV";
 
 const Dashboard = ({ filtered, apiStats, page, setPage, loading }) => {
   const totalPages = apiStats?.total_pages || 1;
-  console.log("totalPages", totalPages);
+
   const getPagination = (current, total) => {
     const delta = 1;
     const range = [];
-
     for (
       let i = Math.max(2, current - delta);
       i <= Math.min(total - 1, current + delta);
@@ -18,15 +17,21 @@ const Dashboard = ({ filtered, apiStats, page, setPage, loading }) => {
     ) {
       range.push(i);
     }
-
     if (current - delta > 2) range.unshift("...");
     if (current + delta < total - 1) range.push("...");
-
     range.unshift(1);
     if (total !== 1) range.push(total);
-
     return range;
   };
+
+  // Date range from API
+  const dateFrom = apiStats?.date_from ?? "";
+  const dateTo = apiStats?.date_to ?? "";
+  const dateLabel =
+    dateFrom && dateTo
+      ? `${dateFrom} – ${dateTo}`
+      : "Real-time auction performance metrics";
+
   return (
     <main className="flex-1 p-8 overflow-y-auto">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -36,12 +41,10 @@ const Dashboard = ({ filtered, apiStats, page, setPage, loading }) => {
             <h1 className="text-2xl font-bold text-slate-900">
               Dashboard Overview
             </h1>
-            <p className="text-slate-500 text-sm">
-              Real-time auction performance metrics
-            </p>
+            <p className="text-slate-500 text-sm">{dateLabel}</p>
           </div>
           <ExportCSV
-            data={filtered || []} // fallback to empty array
+            data={filtered || []}
             buttonClass="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 font-medium text-sm"
           />
         </div>
@@ -67,8 +70,8 @@ const Dashboard = ({ filtered, apiStats, page, setPage, loading }) => {
         )}
       </div>
 
+      {/* Pagination */}
       <div className="flex justify-center items-center gap-2 mt-6">
-        {/* Prev */}
         <button
           onClick={() => setPage((p) => Math.max(p - 1, 1))}
           disabled={page === 1}
@@ -77,7 +80,6 @@ const Dashboard = ({ filtered, apiStats, page, setPage, loading }) => {
           ‹
         </button>
 
-        {/* Pages */}
         <div className="flex items-center gap-2">
           {getPagination(page, totalPages).map((p, i) => (
             <button
@@ -97,7 +99,6 @@ const Dashboard = ({ filtered, apiStats, page, setPage, loading }) => {
           ))}
         </div>
 
-        {/* Next */}
         <button
           onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
           disabled={page === totalPages}

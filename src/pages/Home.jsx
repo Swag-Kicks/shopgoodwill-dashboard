@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
-// import KPICards from "../components/KPICards";
 import Filters from "../components/Filters";
-// import AuctionTable from "../components/AuctionTable";
-// import ExportCSV from "../components/ExportCSV";
-// import Charts from "../components/Charts";
 import DashboardHome from "../components/Dashboard";
 import Reports from "../components/Reports";
 import { fetchAuctions, fetchCategories } from "../services/api";
@@ -11,10 +7,7 @@ import { fetchAuctions, fetchCategories } from "../services/api";
 const Home = () => {
   const [auctions, setAuctions] = useState([]);
   const [filtered, setFiltered] = useState([]);
-  const [loading, setLoading] = useState({
-    auctions: false,
-    search: false,
-  });
+  const [loading, setLoading] = useState({ auctions: false, search: false });
   const [category, setCategory] = useState("all");
   const [page, setPage] = useState(1);
   const [apiStats, setApiStats] = useState(null);
@@ -48,6 +41,9 @@ const Home = () => {
             total_bid_count: data.total_bid_count || 0,
             avg_bid_number: data.avg_bid_number || 0,
             total_pages: data.total_pages || 0,
+            // ── date range from API ──
+            date_from: data.date_from || "",
+            date_to: data.date_to || "",
           });
         })
         .finally(() => {
@@ -61,32 +57,23 @@ const Home = () => {
   useEffect(() => {
     fetchCategories().then((data) => {
       if (!data) return;
-
-      // sirf names chahiye filter ke liye
       const cats = data.map((c) => c.full_category_path || c.category_name);
       setAvailableCategories(cats);
     });
   }, []);
-  // Handle filters
+
   const handleFilterChange = (filter) => {
     if (filter.category !== undefined) {
       setSelectedCategory(filter.category);
       setCategory(filter.category);
       setPage(1);
     }
-
     if (filter.listingType !== undefined)
       setListingTypeFilter(filter.listingType);
-
     if (filter.minBids !== undefined) setMinBidsFilter(filter.minBids);
-
     if (filter.search !== undefined) setSearchFilter(filter.search);
   };
 
-  // const categories = [
-  //   "all",
-  //   ...new Set((auctions || []).map((a) => a.full_category_path)),
-  // ];
   const listingTypes = [
     ...new Set((auctions || []).map((a) => a.listing_type)),
   ];
@@ -108,7 +95,6 @@ const Home = () => {
                     ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
       >
         <div className="flex items-center gap-3 px-6 py-5 border-b border-gray-200 cursor-pointer hover:bg-gray-50">
-          {/* Logo */}
           <div className="w-12 h-12 flex items-center justify-center">
             <img
               src="https://www.thriftops.com/assets/e474a0171b0e6a9a49ee107efb844fb3.svg"
@@ -116,30 +102,28 @@ const Home = () => {
               className="w-10 h-10 object-contain"
             />
           </div>
-
-          {/* Text */}
           <span className="font-semibold text-slate-900 text-base tracking-wide">
             Thriftops Data
           </span>
         </div>
 
-        {/* Sidebar Links */}
+        {/* Nav */}
         <nav className="mt-6 space-y-2">
           <button
-            className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 w-full text-left"
+            className={`flex items-center gap-3 p-3 rounded-xl w-full text-left transition-colors ${pageView === "dashboard" ? "bg-indigo-50 text-indigo-700 font-semibold" : "hover:bg-gray-100"}`}
             onClick={() => setPageView("dashboard")}
           >
             Dashboard
           </button>
           <button
-            className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 w-full text-left"
+            className={`flex items-center gap-3 p-3 rounded-xl w-full text-left transition-colors ${pageView === "reports" ? "bg-indigo-50 text-indigo-700 font-semibold" : "hover:bg-gray-100"}`}
             onClick={() => setPageView("reports")}
           >
             Reports
           </button>
         </nav>
 
-        {/* Filters Section */}
+        {/* Filters */}
         <div className="flex-1 overflow-y-auto mt-4">
           <h3 className="text-slate-500 font-semibold text-sm mb-2 uppercase tracking-wide">
             Filters
@@ -151,7 +135,7 @@ const Home = () => {
               selectedCategory={category}
               selectedListingType={listingTypeFilter}
               selectedMinBids={minBidsFilter}
-              selectedSearch={searchFilter} // ✅ ADD THIS
+              selectedSearch={searchFilter}
               onFilterChange={handleFilterChange}
               sidebar
             />
@@ -163,7 +147,7 @@ const Home = () => {
         </div>
       </aside>
 
-      {/* Mobile Toggle Button */}
+      {/* Mobile Toggle */}
       <button
         className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-indigo-600 text-white rounded shadow-lg"
         onClick={() => setSidebarOpen((prev) => !prev)}
@@ -175,7 +159,7 @@ const Home = () => {
       <main className="flex-1 p-8 overflow-y-auto">
         {loading.auctions || loading.search ? (
           <div className="flex items-center justify-center h-40">
-            <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
           <>
@@ -188,7 +172,6 @@ const Home = () => {
                 loading={loading}
               />
             )}
-
             {pageView === "reports" && <Reports />}
           </>
         )}
