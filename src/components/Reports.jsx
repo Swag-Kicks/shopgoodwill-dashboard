@@ -286,11 +286,6 @@ const Reports = () => {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
-  const fmt1 = (n) =>
-    Number(n ?? 0).toLocaleString(undefined, {
-      minimumFractionDigits: 1,
-      maximumFractionDigits: 1,
-    });
 
   /* ── Selected category ── */
   const catObj = activeCat
